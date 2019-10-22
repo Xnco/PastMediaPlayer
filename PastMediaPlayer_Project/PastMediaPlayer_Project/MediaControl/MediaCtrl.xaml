@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="PastMediaPlayer_Project.MediaControl.MediaCtrl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PastMediaPlayer_Project.MediaControl"
+             mc:Ignorable="d" 
+             Background="Gray"
+             d:DesignHeight="600" d:DesignWidth="800">
+    <Grid>
+        <DockPanel LastChildFill="True">
+            <StackPanel Orientation="Vertical" Width="auto" DockPanel.Dock="Bottom">
+                <Slider Margin="0" ValueChanged="Slider_ValueChanged"></Slider>
+                <StackPanel DockPanel.Dock="Bottom" 
+                        Orientation="Horizontal" HorizontalAlignment="Center"
+                        Height="50" Width="auto">
+                    <StackPanel Margin="0,0,30,0">
+                        <TextBlock HorizontalAlignment="Center">00:00:00 / 00:00:00</TextBlock>
+                        <Button Content="Open File" Width="100" Height="30"/>
+                    </StackPanel>
+                    
+                    <Button Content="&lt;&lt;" Width="50" Height="50"/>
+                    <Button x:Name="Back_btn" Content="&lt;" Width="50" Height="50" Click="Back_btn_Click"/>
+                    <Button x:Name="Play_btn" Content="Play" Width="50" Height="50" Click="Play_btn_Click"/>
+                    <Button x:Name="Fore_btn" Content="&gt;" Width="50" Height="50" Click="Fore_btn_Click"/>
+                    <Button Content="&gt;&gt;" Width="50" Height="50"/>
+                    <TextBlock Width="50" VerticalAlignment="Center" Margin="30,0,0,0">Volume</TextBlock>
+                    <Slider Width="100" VerticalAlignment="Center"></Slider>
+                </StackPanel>
+            </StackPanel>
+            
+            <MediaElement Name="MainMedia" DockPanel.Dock="Top"
+                      MediaOpened="MainMedia_MediaOpened"
+                      />
+        </DockPanel>
+
+    </Grid>
+</UserControl>

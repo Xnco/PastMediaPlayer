@@ -1,0 +1,20 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PastMediaPlayer_Project"
+        xmlns:MediaControl="clr-namespace:PastMediaPlayer_Project.MediaControl" x:Class="PastMediaPlayer_Project.MainWindow"
+        mc:Ignorable="d"
+        Background="Black"
+        AllowDrop="True" Drop="Window_Drop"
+        Title="PastMediaPlayer" 
+        MinWidth="900" MinHeight="450"
+        Width="900" Height="450" >
+    <Grid Margin="0,0,0,0">
+        <DockPanel LastChildFill="True">
+            <MediaControl:FolderTreeCtrl x:Name="folderCtrl" Width="300" DockPanel.Dock="Right"/>
+            <MediaControl:MediaCtrl x:Name="mediaCtrl" DockPanel.Dock="Left" />
+        </DockPanel>
+    </Grid>
+</Window>
