@@ -22,3 +22,5 @@ E:\GitHub_P\PastMediaPlayer\PastMediaPlayer_Project\PastMediaPlayer_Project\obj\
 E:\GitHub_P\PastMediaPlayer\PastMediaPlayer_Project\PastMediaPlayer_Project\obj\Debug\netcoreapp3.0\MediaControl\FolderTreeCtrl.baml
 E:\GitHub_P\PastMediaPlayer\PastMediaPlayer_Project\PastMediaPlayer_Project\obj\Debug\netcoreapp3.0\MediaControl\CheckTreeView.g.cs
 E:\GitHub_P\PastMediaPlayer\PastMediaPlayer_Project\PastMediaPlayer_Project\obj\Debug\netcoreapp3.0\MediaControl\CheckTreeView.baml
+E:\GitHub_P\PastMediaPlayer\PastMediaPlayer_Project\PastMediaPlayer_Project\obj\Debug\netcoreapp3.0\MediaControl\MySlider.g.cs
+E:\GitHub_P\PastMediaPlayer\PastMediaPlayer_Project\PastMediaPlayer_Project\obj\Debug\netcoreapp3.0\MediaControl\MySlider.baml

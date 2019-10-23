@@ -16,7 +16,7 @@ namespace PastMediaPlayer_Project.MediaControl
     /// <summary>
     /// CheckTreeView.xaml 的交互逻辑
     /// </summary>
-    public partial class CheckTreeView : UserControl
+    public partial class CheckTreeView : TreeViewItem
     {
         public CheckTreeView()
         {

@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace PastMediaPlayer_Project.MediaControl
 {
@@ -21,7 +22,20 @@ namespace PastMediaPlayer_Project.MediaControl
         public MediaCtrl()
         {
             InitializeComponent();
+
+            isPlaying = false;
+            UriCache = new Dictionary<string, Uri>();
+
+            updateCurTimer = new DispatcherTimer();
+            updateCurTimer.Tick += UpdateCurPlayTime;
+            updateCurTimer.Interval = TimeSpan.FromSeconds(0.5);
         }
+
+        public bool isPlaying;
+
+        private Dictionary<string, Uri> UriCache;
+
+        private DispatcherTimer updateCurTimer;
 
         public void ControllingMediaSound(double value)
         {
@@ -30,15 +44,47 @@ namespace PastMediaPlayer_Project.MediaControl
 
         public void OpenMediaByUrl(string path)
         {
-            MainMedia.Source = new Uri(path);
+            if (UriCache.ContainsKey(path))
+            {
+                MainMedia.Source = UriCache[path];
+            }
+            else
+            {
+                MainMedia.Source = new Uri(path);
+            }
         }
 
-        // 媒体打开后
+        private void MainMedia_Loaded(object sender, RoutedEventArgs e)
+        {
+            // 默认播放状态
+            MainMedia.Play();
+            isPlaying = true;
+        }
+
         private void MainMedia_MediaOpened(object sender, RoutedEventArgs e)
         {
             //MessageBox.Show($"打开 {MainMedia.Source.AbsolutePath} 成功");
+
+            LastTime.Text = MainMedia.NaturalDuration.TimeSpan.ToString();
+            // 新打开一个视频也自动播放
+            MainMedia.Play();
+            isPlaying = true;
+
+            updateCurTimer.Start();
         }
-        
+
+        private void MainMedia_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            isPlaying = false;
+            updateCurTimer.Stop();
+        }
+
+        private void MainMedia_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            isPlaying = false;
+            updateCurTimer.Stop();
+        }
+
         private void Back_btn_Click(object sender, RoutedEventArgs e)
         {
             if (MainMedia.Source == null) return;
@@ -48,16 +94,19 @@ namespace PastMediaPlayer_Project.MediaControl
 
         private void Play_btn_Click(object sender, RoutedEventArgs e)
         {
-            if (MainMedia.Source == null) return; 
+            if (MainMedia.Source == null) return;
 
-            if (MainMedia.Clock.IsPaused)
+            if (isPlaying)
             {
-                MainMedia.Play();
+                MainMedia.Pause();
+                updateCurTimer.Stop();
             }
             else
             {
-                MainMedia.Pause();
+                MainMedia.Play();
+                updateCurTimer.Start();
             }
+            isPlaying = !isPlaying;
         }
 
         private void Fore_btn_Click(object sender, RoutedEventArgs e)
@@ -72,6 +121,16 @@ namespace PastMediaPlayer_Project.MediaControl
             if (MainMedia.Source == null) return;
 
             MainMedia.Position = TimeSpan.FromSeconds(e.NewValue);
+        }
+
+        private void UpdateCurPlayTime(object sender, EventArgs args)
+        {
+            if (MainMedia.Source == null || !isPlaying)
+            {
+                return;
+            }
+
+            CurTime.Text = $"{MainMedia.Position.Hours:00}:{MainMedia.Position.Minutes:00}:{MainMedia.Position.Seconds:00}";
         }
     }
 }

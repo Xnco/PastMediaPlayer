@@ -40,11 +40,19 @@ namespace PastMediaPlayer_Project.MediaControl
         public string rootPath;
         public event Action<string> selectedMediaFile;
 
+        public TreeViewItem RootNode;
+
         public void InitFolderTree(string varRootPath)
         {
             rootPath = varRootPath;
             if (!string.IsNullOrEmpty(rootPath))
             {
+                if (RootNode == null)
+                {
+                    RootNode = new TreeViewItem();
+                    RootNode.Header = rootPath;
+                    TreeViewRoot.Items.Add(RootNode);
+                }
                 SearchFileToTree(RootNode, rootPath);
                 RootNode.IsExpanded = true;
 

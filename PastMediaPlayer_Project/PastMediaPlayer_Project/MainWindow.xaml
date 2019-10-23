@@ -12,9 +12,23 @@
         MinWidth="900" MinHeight="450"
         Width="900" Height="450" >
     <Grid Margin="0,0,0,0">
-        <DockPanel LastChildFill="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="300" MinWidth="200"/>
+        </Grid.ColumnDefinitions>
+
+        <MediaControl:MediaCtrl x:Name="mediaCtrl" Grid.Column="0" />
+        
+        <GridSplitter Width="1.5" Grid.Column="0" 
+                      HorizontalAlignment="Right" VerticalAlignment="Stretch" 
+                      Background="Black"
+                      />
+        
+        <MediaControl:FolderTreeCtrl x:Name="folderCtrl" Grid.Column="1"/>
+
+        <!--<DockPanel LastChildFill="True">
             <MediaControl:FolderTreeCtrl x:Name="folderCtrl" Width="300" DockPanel.Dock="Right"/>
             <MediaControl:MediaCtrl x:Name="mediaCtrl" DockPanel.Dock="Left" />
-        </DockPanel>
+        </DockPanel>-->
     </Grid>
 </Window>

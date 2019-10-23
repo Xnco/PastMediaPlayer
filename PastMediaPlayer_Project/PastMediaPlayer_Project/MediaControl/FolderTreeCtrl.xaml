@@ -5,13 +5,25 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PastMediaPlayer_Project.MediaControl"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="300">
     <Grid>
-        <TreeView Margin="0,0,0,0">
-            <TreeViewItem Name="RootNode"
-                Header="Root" MouseRightButtonDown="TreeViewItem_MouseRightButtonDown">
-                
-            </TreeViewItem>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="300"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <TreeView Grid.Row="0" Name="TreeViewRoot">
+            
         </TreeView>
+
+        <GridSplitter Grid.Row="0" Height="2" 
+                      VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
+                      Background="Black"/>
+
+        <TextBox Grid.Row="1"/>
+        <ListView Grid.Row="2">
+            
+        </ListView>
     </Grid>
 </UserControl>
