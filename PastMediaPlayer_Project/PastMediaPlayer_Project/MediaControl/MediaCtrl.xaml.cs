@@ -33,6 +33,7 @@ namespace PastMediaPlayer_Project.MediaControl
 
         public bool isPlaying;
 
+        private Uri curUri;
         private Dictionary<string, Uri> UriCache;
 
         private DispatcherTimer updateCurTimer;
@@ -50,7 +51,10 @@ namespace PastMediaPlayer_Project.MediaControl
             }
             else
             {
-                MainMedia.Source = new Uri(path);
+                Uri uri = new Uri(path);
+                MainMedia.Source = uri;
+                curUri = uri;
+                UriCache.Add(path, uri);
             }
         }
 
@@ -69,6 +73,9 @@ namespace PastMediaPlayer_Project.MediaControl
             // 新打开一个视频也自动播放
             MainMedia.Play();
             isPlaying = true;
+
+            //MessageBox.Show(MainMedia.NaturalDuration.ToString());
+            mediaSlider.Maximum = MainMedia.NaturalDuration.TimeSpan.TotalSeconds;
 
             updateCurTimer.Start();
         }
@@ -116,13 +123,6 @@ namespace PastMediaPlayer_Project.MediaControl
             MainMedia.Position += TimeSpan.FromSeconds(5);
         }
 
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (MainMedia.Source == null) return;
-
-            MainMedia.Position = TimeSpan.FromSeconds(e.NewValue);
-        }
-
         private void UpdateCurPlayTime(object sender, EventArgs args)
         {
             if (MainMedia.Source == null || !isPlaying)
@@ -131,6 +131,35 @@ namespace PastMediaPlayer_Project.MediaControl
             }
 
             CurTime.Text = $"{MainMedia.Position.Hours:00}:{MainMedia.Position.Minutes:00}:{MainMedia.Position.Seconds:00}";
+            mediaSlider.Value = MainMedia.Position.TotalSeconds;
+        }
+
+        private void Volume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (MainMedia == null) return;
+
+            MainMedia.Volume = e.NewValue;
+        }
+
+        private void media_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (MainMedia == null || MainMedia.Source == null) return;
+
+            MainMedia.Position = TimeSpan.FromSeconds(e.NewValue);
+        }
+
+        private void mediaSlider_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (MainMedia == null) return;
+
+            MainMedia.Stop();
+        }
+        
+        private void mediaSlider_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (MainMedia == null) return;
+
+            MainMedia.Play();
         }
     }
 }

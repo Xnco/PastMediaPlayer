@@ -10,7 +10,11 @@
     <Grid>
         <DockPanel LastChildFill="True">
             <StackPanel Orientation="Vertical" Width="auto" DockPanel.Dock="Bottom">
-                <local:MySlider Margin="0" ValueChanged="Slider_ValueChanged" IsMoveToPointEnabled="True"/>
+                <local:MySlider Margin="0" x:Name="mediaSlider"
+                                ValueChanged="media_ValueChanged" IsMoveToPointEnabled="True"
+                                PreviewMouseDown="mediaSlider_MouseDown"
+                                PreviewMouseUp="mediaSlider_MouseUp"
+                                />
                 <StackPanel DockPanel.Dock="Bottom" 
                         Orientation="Horizontal" HorizontalAlignment="Center"
                         Height="50" Width="auto">
@@ -29,7 +33,9 @@
                     <Button x:Name="Fore_btn" Content="&gt;" Width="50" Height="50" Click="Fore_btn_Click"/>
                     <Button Content="&gt;&gt;" Width="50" Height="50"/>
                     <TextBlock Width="50" VerticalAlignment="Center" Margin="30,0,0,0">Volume</TextBlock>
-                    <local:MySlider Width="100" VerticalAlignment="Center" IsMoveToPointEnabled="True"/>
+                    <local:MySlider Width="100" VerticalAlignment="Center" IsMoveToPointEnabled="True" 
+                                    Minimum="0" Maximum="1" Value="1" 
+                                    ValueChanged="Volume_ValueChanged"/>
                 </StackPanel>
             </StackPanel>
             
