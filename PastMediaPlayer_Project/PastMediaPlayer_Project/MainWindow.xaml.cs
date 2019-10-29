@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PastMediaPlayer_Project.MediaControl;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,11 +21,17 @@ namespace PastMediaPlayer_Project
     /// </summary>
     public partial class MainWindow : Window
     {
+        LocalInfo localInfo;
+
         public MainWindow()
         {
             InitializeComponent();
 
+            localInfo = LocalInfo.GetSingle();
+            localInfo.InitRoot_FolderTree(localInfo.FolderPath); // 根据路径初始化
+
             folderCtrl.selectedMediaFile += PlayMediaFile;
+            folderCtrl.InitRootTreeItem(localInfo.rootFolderTree);
         }
 
         private void Window_Drop(object sender, DragEventArgs e)
@@ -33,13 +40,15 @@ namespace PastMediaPlayer_Project
             {
                 object data = e.Data.GetData(DataFormats.FileDrop);
                 string path = ((System.Array)data).GetValue(0).ToString();
-                folderCtrl.InitFolderTree(path);
+                localInfo.InitRoot_FolderTree(path);
+
+                folderCtrl.InitRootTreeItem(localInfo.rootFolderTree);
             }
         }
 
-        private void PlayMediaFile(string path)
+        private void PlayMediaFile(FolderTree tree)
         {
-            mediaCtrl.OpenMediaByUrl(path);
+            mediaCtrl.OpenMediaByFolderInfo(tree);
         }
     }
 }

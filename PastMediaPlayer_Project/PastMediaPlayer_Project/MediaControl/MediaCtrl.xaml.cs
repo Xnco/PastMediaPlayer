@@ -43,6 +43,11 @@ namespace PastMediaPlayer_Project.MediaControl
             MainMedia.Volume += value;
         }
 
+        public void OpenMediaByFolderInfo(FolderTree tree)
+        {
+            OpenMediaByUrl(tree.fullPath);
+        }
+
         public void OpenMediaByUrl(string path)
         {
             if (UriCache.ContainsKey(path))

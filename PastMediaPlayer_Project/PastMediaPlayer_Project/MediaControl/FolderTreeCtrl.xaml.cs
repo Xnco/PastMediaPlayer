@@ -22,73 +22,69 @@ namespace PastMediaPlayer_Project.MediaControl
         public FolderTreeCtrl()
         {
             InitializeComponent();
-            rootPath = "";
-
-            configDir = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + @"\PastMediaPlayer\";
-            configPath = configDir + "config.txt";
-
-            if (File.Exists(configPath))
-            {
-                InitFolderTree(File.ReadAllText(configPath));
-            }
         }
 
-        // Local Config
-        public string configDir;
-        public string configPath; 
+        public TreeViewItem rootTreeViewItem;
 
-        public string rootPath;
-        public event Action<string> selectedMediaFile;
+        public event Action<FolderTree> selectedMediaFile;
 
-        public TreeViewItem RootNode;
-
-        public void InitFolderTree(string varRootPath)
+        public void InitRootTreeItem(FolderTree root)
         {
-            rootPath = varRootPath;
-            if (!string.IsNullOrEmpty(rootPath))
+            if (root == null || string.IsNullOrEmpty(root.fullPath))
             {
-                if (RootNode == null)
-                {
-                    RootNode = new TreeViewItem();
-                    RootNode.Header = rootPath;
-                    TreeViewRoot.Items.Add(RootNode);
-                }
-                SearchFileToTree(RootNode, rootPath);
-                RootNode.IsExpanded = true;
-
-                // Local
-                if (!Directory.Exists(configDir))
-                {
-                    Directory.CreateDirectory(configDir);
-                }
-                File.WriteAllText(configPath, rootPath);
+                return;
             }
+
+            if (rootTreeViewItem != null)
+            {
+                TreeViewRoot.Items.Remove(rootTreeViewItem);
+                rootTreeViewItem = null;
+            }
+
+            // 记录现在打开的 path
+            LocalInfo.GetSingle().FolderPath = root.fullPath;
+
+            // root
+            rootTreeViewItem = new TreeViewItem();
+            rootTreeViewItem.Header = root.fullPath;
+            rootTreeViewItem.DataContext = root;
+            root.curItem = rootTreeViewItem;
+
+            CreateItemByFolderInfo(root);
+
+            rootTreeViewItem.IsExpanded = true;
+            TreeViewRoot.Items.Add(rootTreeViewItem);
         }
 
-        public void SearchFileToTree(TreeViewItem root, string path)
+        public void CreateItemByFolderInfo(FolderTree root)
         {
-            if (string.IsNullOrEmpty(path)) return;
+            if (string.IsNullOrEmpty(root.fullPath)) return;
 
-            DirectoryInfo rootInfo = new DirectoryInfo(path);
-            DirectoryInfo[] dirs = rootInfo.GetDirectories();
-            for (int i = 0; i < dirs.Length; i++)
+            for (int i = 0; i < root.childs.Count; i++)
             {
-                TreeViewItem tree = new TreeViewItem();
-                tree.Header = dirs[i].Name;
-                root.Items.Add(tree);
-                SearchFileToTree(tree, dirs[i].FullName);
-            }
+                TreeViewItem item = new TreeViewItem();
+                item.DataContext = root.childs[i];
+                root.childs[i].curItem = item;
 
-            FileInfo[] files = rootInfo.GetFiles("*.mp4");
-            for (int i = 0; i < files.Length; i++)
-            {
-                TreeViewItem tree = new TreeViewItem();
-                string[] names = files[i].FullName.Split('.');
-                string name = $"【{names[names.Length -1 ]}】 {files[i].Name}";
-                tree.Header = name;
-                tree.DataContext = files[i].FullName;
-                tree.Selected += SelectedFile;
-                root.Items.Add(tree);
+                if (root.childs[i].isDirectory)
+                {
+                    // directory
+                    TreeViewHeader header = new TreeViewHeader();
+                    header.SetImagePath(root.childs[i].iconPath);
+                    header.SetText(root.childs[i].name);
+                    item.Header = header;
+                    CreateItemByFolderInfo(root.childs[i]);
+                }
+                else
+                {
+                    // file
+                    string[] names = root.childs[i].fullPath.Split('.');
+                    string name = $"【{names[names.Length - 1]}】 {root.childs[i].name}";
+                    item.Header = name;
+                }
+
+                item.Selected += SelectedFile;
+                root.curItem.Items.Add(item);
             }
         }
 
@@ -99,19 +95,16 @@ namespace PastMediaPlayer_Project.MediaControl
 
         private void SelectedFile(object sender, RoutedEventArgs args)
         {
-            if (selectedMediaFile != null)
+            if (selectedMediaFile != null && sender != null)
             {
-               
                 TreeViewItem s = sender as TreeViewItem;
-                if (s != null)
+                if (s != null && s.DataContext != null)
                 {
-                    selectedMediaFile((string)s.DataContext);
-                    //string name = s.Header as string;
-                    //string[] infos = name.Split("..");
-                    //if (infos.Length > 1)
-                    //{
-                    //    selectedMediaFile(infos[2]);
-                    //}
+                    FolderTree tree = s.DataContext as FolderTree;
+                    if (tree != null)
+                    {
+                        selectedMediaFile(tree);
+                    }
                 }
             }
         }

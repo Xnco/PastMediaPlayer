@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_0
 E:\GitHub_P\PastMediaPlayer\PastMediaPlayer_Project\PastMediaPlayer_Project\App.xaml
-51793607094
+51117876851
 
-61256510191
+8-724014210
 192-1037106189
-MainWindow.xaml;MediaControl\CheckTreeView.xaml;MediaControl\FolderTreeCtrl.xaml;MediaControl\MediaCtrl.xaml;MediaControl\MySlider.xaml;
+MainWindow.xaml;MediaControl\FolderTreeCtrl.xaml;MediaControl\MediaCtrl.xaml;MediaControl\MySlider.xaml;MediaControl\TreeViewHeader.xaml;
 
 False
 

@@ -34,7 +34,7 @@
                     <Button Content="&gt;&gt;" Width="50" Height="50"/>
                     <TextBlock Width="50" VerticalAlignment="Center" Margin="30,0,0,0">Volume</TextBlock>
                     <local:MySlider Width="100" VerticalAlignment="Center" IsMoveToPointEnabled="True" 
-                                    Minimum="0" Maximum="1" Value="1" 
+                                    Minimum="0" Maximum="1" Value="0" 
                                     ValueChanged="Volume_ValueChanged"/>
                 </StackPanel>
             </StackPanel>

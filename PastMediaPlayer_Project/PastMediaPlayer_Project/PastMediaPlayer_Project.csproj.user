@@ -7,9 +7,6 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="MediaControl\CheckTreeView.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="MediaControl\FolderTreeCtrl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -19,12 +16,12 @@
     <Compile Update="MediaControl\MySlider.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="MediaControl\TreeViewHeader.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="MainWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="MediaControl\CheckTreeView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MediaControl\FolderTreeCtrl.xaml">
@@ -34,6 +31,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MediaControl\MySlider.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MediaControl\TreeViewHeader.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
