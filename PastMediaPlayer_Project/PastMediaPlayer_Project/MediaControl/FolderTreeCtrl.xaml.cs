@@ -60,6 +60,13 @@ namespace PastMediaPlayer_Project.MediaControl
         {
             if (string.IsNullOrEmpty(root.fullPath)) return;
 
+            // 通用右键菜单
+            ContextMenu menu = new ContextMenu();
+            MenuItem menuItem = new MenuItem();
+            menuItem.Header = "Play";
+            menuItem.Click += MenuItem_Click;
+            menu.Items.Add(menuItem);
+
             for (int i = 0; i < root.childs.Count; i++)
             {
                 TreeViewItem item = new TreeViewItem();
@@ -81,16 +88,47 @@ namespace PastMediaPlayer_Project.MediaControl
                     string[] names = root.childs[i].fullPath.Split('.');
                     string name = $"【{names[names.Length - 1]}】 {root.childs[i].name}";
                     item.Header = name;
+                    item.ContextMenu = menu;
                 }
 
-                item.Selected += SelectedFile;
+                item.MouseRightButtonDown += RightSelectedFile;
+                item.MouseLeftButtonDown += SelectedFile;
                 root.curItem.Items.Add(item);
+            }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = sender as MenuItem;
+            if (item != null)
+            {
+                if (TreeViewRoot.SelectedItem != null)
+                {
+                    TreeViewItem s = TreeViewRoot.SelectedItem as TreeViewItem;
+                    if (s != null && s.DataContext != null)
+                    {
+                        FolderTree tree = s.DataContext as FolderTree;
+                        if (tree != null)
+                        {
+                            selectedMediaFile(tree);
+                        }
+                    }
+                }
             }
         }
 
         private void TreeViewItem_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
 
+        }
+
+        private void RightSelectedFile(object sender, MouseButtonEventArgs e)
+        {
+            TreeViewItem item = sender as TreeViewItem;
+            if (item != null)
+            {
+                item.Focus();
+            }
         }
 
         private void SelectedFile(object sender, RoutedEventArgs args)
