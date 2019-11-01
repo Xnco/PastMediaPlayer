@@ -92,7 +92,7 @@ namespace PastMediaPlayer_Project.MediaControl
                 }
 
                 item.MouseRightButtonDown += RightSelectedFile;
-                item.MouseLeftButtonDown += SelectedFile;
+                item.PreviewMouseLeftButtonDown += SelectedFile;
                 root.curItem.Items.Add(item);
             }
         }
