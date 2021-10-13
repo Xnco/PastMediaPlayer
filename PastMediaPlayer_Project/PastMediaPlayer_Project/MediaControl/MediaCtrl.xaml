@@ -11,7 +11,8 @@
         <DockPanel LastChildFill="True">
             <StackPanel Orientation="Vertical" Width="auto" DockPanel.Dock="Bottom">
                 <local:MySlider Margin="0" x:Name="mediaSlider"
-                                ValueChanged="media_ValueChanged" IsMoveToPointEnabled="True"
+                                ValueChanged="media_ValueChanged" 
+                                IsMoveToPointEnabled="True"
                                 PreviewMouseDown="mediaSlider_MouseDown"
                                 PreviewMouseUp="mediaSlider_MouseUp"
                                 />

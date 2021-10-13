@@ -46,6 +46,23 @@ namespace PastMediaPlayer_Project
             }
         }
 
+        private void Window_Keydown(object sender, KeyEventArgs e)
+        {
+            if (mediaCtrl == null)
+                return;
+
+            //MessageBox.Show("1");
+            //if (e.KeyStates == Keyboard.GetKeyStates(Key.F4) && Keyboard.Modifiers == ModifierKeys.Alt) 组合键
+            if (e.KeyStates == Keyboard.GetKeyStates(Key.Right))
+            {
+                mediaCtrl.MainMedia_CtrlTime(5);
+            }
+            else if(e.KeyStates == Keyboard.GetKeyStates(Key.Left))
+            {
+                mediaCtrl.MainMedia_CtrlTime(-5);
+            }
+        }
+
         private void PlayMediaFile(FolderTree tree)
         {
             mediaCtrl.OpenMediaByFolderInfo(tree);

@@ -1,19 +1,19 @@
 ﻿PastMediaPlayer_Project
-
+1.0.0.0
 
 winexe
 C#
 .cs
-E:\GitHub_P\PastMediaPlayer\PastMediaPlayer_Project\PastMediaPlayer_Project\obj\Debug\netcoreapp3.0\
+E:\GithubProjects\PastMediaPlayer\PastMediaPlayer_Project\PastMediaPlayer_Project\obj\Debug\netcoreapp3.0\
 PastMediaPlayer_Project
 none
 false
-TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_0
-E:\GitHub_P\PastMediaPlayer\PastMediaPlayer_Project\PastMediaPlayer_Project\App.xaml
-51117876851
+TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_0;
+E:\GithubProjects\PastMediaPlayer\PastMediaPlayer_Project\PastMediaPlayer_Project\App.xaml
+5-1676064761
 
-91204499252
-192-1037106189
+10346124630
+192-738266699
 MainWindow.xaml;MediaControl\FolderTreeCtrl.xaml;MediaControl\MediaCtrl.xaml;MediaControl\MySlider.xaml;MediaControl\TreeViewHeader.xaml;
 
 False

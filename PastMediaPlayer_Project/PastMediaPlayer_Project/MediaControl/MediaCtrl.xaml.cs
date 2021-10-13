@@ -97,11 +97,16 @@ namespace PastMediaPlayer_Project.MediaControl
             updateCurTimer.Stop();
         }
 
-        private void Back_btn_Click(object sender, RoutedEventArgs e)
+        public void MainMedia_CtrlTime(float inTime)
         {
             if (MainMedia.Source == null) return;
 
-            MainMedia.Position += TimeSpan.FromSeconds(-5);
+            MainMedia.Position += TimeSpan.FromSeconds(inTime);
+        }
+
+        private void Back_btn_Click(object sender, RoutedEventArgs e)
+        {
+            MainMedia_CtrlTime(-5);
         }
 
         private void Play_btn_Click(object sender, RoutedEventArgs e)
@@ -123,9 +128,7 @@ namespace PastMediaPlayer_Project.MediaControl
 
         private void Fore_btn_Click(object sender, RoutedEventArgs e)
         {
-            if (MainMedia.Source == null) return;
-
-            MainMedia.Position += TimeSpan.FromSeconds(5);
+            MainMedia_CtrlTime(5);
         }
 
         private void UpdateCurPlayTime(object sender, EventArgs args)
@@ -157,14 +160,14 @@ namespace PastMediaPlayer_Project.MediaControl
         {
             if (MainMedia == null) return;
 
-            MainMedia.Stop();
+            //MainMedia.Stop();
         }
         
         private void mediaSlider_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (MainMedia == null) return;
 
-            MainMedia.Play();
+            //MainMedia.Play();
         }
     }
 }
