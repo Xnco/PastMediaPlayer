@@ -29,6 +29,9 @@ namespace PastMediaPlayer_Project.MediaControl
             updateCurTimer = new DispatcherTimer();
             updateCurTimer.Tick += UpdateCurPlayTime;
             updateCurTimer.Interval = TimeSpan.FromSeconds(0.5);
+
+            ctrlTimeInterval = 500;
+            lastCtrlTimeStrmp = 0;
         }
 
         public bool isPlaying;
@@ -37,6 +40,11 @@ namespace PastMediaPlayer_Project.MediaControl
         private Dictionary<string, Uri> UriCache;
 
         private DispatcherTimer updateCurTimer;
+
+        private double mediaTotalSecCache;
+        // 时间戳计时，单位是毫秒
+        private long ctrlTimeInterval;
+        private long lastCtrlTimeStrmp;
 
         public void ControllingMediaSound(double value)
         {
@@ -101,7 +109,18 @@ namespace PastMediaPlayer_Project.MediaControl
         {
             if (MainMedia.Source == null) return;
 
+            long tCurTimeStrmp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            if(tCurTimeStrmp - lastCtrlTimeStrmp < ctrlTimeInterval)
+            {
+                // 操作过快
+                //MessageBox.Show("操作过快");
+                return;
+            }
+
             MainMedia.Position += TimeSpan.FromSeconds(inTime);
+
+            // update time
+            lastCtrlTimeStrmp = tCurTimeStrmp;
         }
 
         private void Back_btn_Click(object sender, RoutedEventArgs e)
@@ -139,7 +158,10 @@ namespace PastMediaPlayer_Project.MediaControl
             }
 
             CurTime.Text = $"{MainMedia.Position.Hours:00}:{MainMedia.Position.Minutes:00}:{MainMedia.Position.Seconds:00}";
-            mediaSlider.Value = MainMedia.Position.TotalSeconds;
+
+            // 注意这里不要取两次 MainMedia 的值，Media是一个独立的播放进程，同一帧取两次时间会有细微的差异
+            mediaTotalSecCache = MainMedia.Position.TotalSeconds;
+            mediaSlider.Value = mediaTotalSecCache;
         }
 
         private void Volume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -152,6 +174,24 @@ namespace PastMediaPlayer_Project.MediaControl
         private void media_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (MainMedia == null || MainMedia.Source == null) return;
+
+            if (mediaTotalSecCache == e.NewValue)
+            {
+                //MessageBox.Show("auto");
+                return;
+            }
+
+            // 手动拖进度
+            long tCurTimeStrmp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            if (tCurTimeStrmp - lastCtrlTimeStrmp < ctrlTimeInterval)
+            {
+                // 操作过快
+                //MessageBox.Show("手动操作过快");
+                return;
+            }
+
+            // update time
+            lastCtrlTimeStrmp = tCurTimeStrmp;
 
             MainMedia.Position = TimeSpan.FromSeconds(e.NewValue);
         }
