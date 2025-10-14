@@ -209,5 +209,17 @@ namespace PastMediaPlayer_Project.MediaControl
 
             //MainMedia.Play();
         }
+
+        private void KeyDown_Global(object sender, KeyEventArgs e)
+        {
+            //MessageBox.Show($"Keydown, key = {e.Key}");
+            switch (e.Key)
+            {
+                case Key.Right:
+                    //MessageBox.Show("Keydown right !");
+                    break;
+                default: break;
+            }
+        }
     }
 }
