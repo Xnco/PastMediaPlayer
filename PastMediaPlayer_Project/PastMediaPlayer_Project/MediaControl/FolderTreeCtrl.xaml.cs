@@ -60,13 +60,6 @@ namespace PastMediaPlayer_Project.MediaControl
         {
             if (string.IsNullOrEmpty(root.fullPath)) return;
 
-            // 通用右键菜单
-            ContextMenu menu = new ContextMenu();
-            MenuItem menuItem = new MenuItem();
-            menuItem.Header = "Play";
-            menuItem.Click += MenuItem_Click;
-            menu.Items.Add(menuItem);
-
             for (int i = 0; i < root.childs.Count; i++)
             {
                 TreeViewItem item = new TreeViewItem();
@@ -85,15 +78,81 @@ namespace PastMediaPlayer_Project.MediaControl
                 else
                 {
                     // file
-                    string[] names = root.childs[i].fullPath.Split('.');
-                    string name = $"【{names[names.Length - 1]}】 {root.childs[i].name}";
-                    item.Header = name;
-                    item.ContextMenu = menu;
+                    item.Header = BuildFileHeader(root.childs[i]);
+                    item.ContextMenu = BuildFileContextMenu(root.childs[i]);
                 }
 
                 item.MouseRightButtonDown += RightSelectedFile;
                 item.PreviewMouseLeftButtonDown += SelectedFile;
                 root.curItem.Items.Add(item);
+            }
+        }
+
+        // 文件节点的显示文本：有别名则附加别名
+        private string BuildFileHeader(FolderTree tree)
+        {
+            string[] names = tree.fullPath.Split('.');
+            string baseName = $"【{names[names.Length - 1]}】 {tree.name}";
+            string alias = TryGetAlias(tree);
+            return string.IsNullOrEmpty(alias) ? baseName : $"{baseName}  ({alias})";
+        }
+
+        // 按文件独立创建右键菜单（菜单项文本需要随别名变化）
+        private ContextMenu BuildFileContextMenu(FolderTree tree)
+        {
+            ContextMenu menu = new ContextMenu();
+
+            MenuItem playItem = new MenuItem();
+            playItem.Header = "Play";
+            playItem.Click += MenuItem_Click;
+            menu.Items.Add(playItem);
+
+            MenuItem aliasItem = new MenuItem();
+            string alias = TryGetAlias(tree);
+            aliasItem.Header = string.IsNullOrEmpty(alias) ? "新增别名" : alias;
+            aliasItem.Tag = tree;
+            aliasItem.Click += AliasMenuItem_Click;
+            menu.Items.Add(aliasItem);
+
+            return menu;
+        }
+
+        private static string TryGetAlias(FolderTree tree)
+        {
+            var ws = LocalInfo.GetSingle().CurrentWorkspace;
+            if (ws == null || tree == null || string.IsNullOrEmpty(tree.fullPath)) return null;
+            string key = ws.Cache.MakeKey(tree.fullPath);
+            if (string.IsNullOrEmpty(key)) return null;
+            var entry = ws.Cache.Get(key);
+            return entry?.Alias;
+        }
+
+        private void AliasMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = sender as MenuItem;
+            FolderTree tree = mi?.Tag as FolderTree;
+            if (tree == null) return;
+
+            var ws = LocalInfo.GetSingle().CurrentWorkspace;
+            if (ws == null) return;
+            string key = ws.Cache.MakeKey(tree.fullPath);
+            if (string.IsNullOrEmpty(key)) return;
+
+            string current = ws.Cache.Get(key)?.Alias ?? string.Empty;
+            var dlg = new AliasInputDialog(current, Window.GetWindow(this));
+            if (dlg.ShowDialog() == true)
+            {
+                string newAlias = (dlg.AliasText ?? string.Empty).Trim();
+                var entry = ws.Cache.GetOrCreate(key);
+                entry.Alias = string.IsNullOrEmpty(newAlias) ? null : newAlias;
+                ws.Cache.Save();
+
+                // 刷新 UI：文件节点标题 + 右键菜单里的别名项
+                if (tree.curItem != null)
+                {
+                    tree.curItem.Header = BuildFileHeader(tree);
+                    tree.curItem.ContextMenu = BuildFileContextMenu(tree);
+                }
             }
         }
 
