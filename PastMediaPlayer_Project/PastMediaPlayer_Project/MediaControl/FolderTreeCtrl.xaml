@@ -8,21 +8,25 @@
              d:DesignHeight="450" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="300"></RowDefinition>
+            <RowDefinition Height="24"></RowDefinition>
+            <RowDefinition Height="276"></RowDefinition>
             <RowDefinition Height="20"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <TreeView Grid.Row="0" Name="TreeViewRoot">
+        <TextBox Grid.Row="0" Name="SearchBox" VerticalContentAlignment="Center"
+                 TextChanged="SearchBox_TextChanged"/>
+
+        <TreeView Grid.Row="1" Name="TreeViewRoot">
             
         </TreeView>
 
-        <GridSplitter Grid.Row="0" Height="2" 
+        <GridSplitter Grid.Row="1" Height="2" 
                       VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
                       Background="Black"/>
 
-        <TextBox Grid.Row="1"/>
-        <ListView Grid.Row="2">
+        <TextBox Grid.Row="2"/>
+        <ListView Grid.Row="3">
             
         </ListView>
     </Grid>

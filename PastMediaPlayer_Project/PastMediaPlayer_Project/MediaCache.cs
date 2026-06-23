@@ -15,6 +15,9 @@ namespace PastMediaPlayer_Project
         /// <summary>别名</summary>
         public string Alias { get; set; }
 
+        /// <summary>评分（0.1-10，支持一位小数），null 表示未评分</summary>
+        public double? Rating { get; set; }
+
         /// <summary>标签列表</summary>
         public List<string> Tags { get; set; } = new List<string>();
 
