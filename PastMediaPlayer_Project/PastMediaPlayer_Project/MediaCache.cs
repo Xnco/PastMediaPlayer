@@ -52,6 +52,19 @@ namespace PastMediaPlayer_Project
             = new Dictionary<string, MediaCacheEntry>(StringComparer.OrdinalIgnoreCase);
 
         private Workspace _workspace;
+        private TagIndex _tagIndex;
+
+        /// <summary>标签倒排索引（懒加载）：Tag -> 所有打了该标签的视频路径列表。
+        /// 在 <see cref="Save"/> 时会以 Entries 为唯一数据源重建后落盘。</summary>
+        [System.Text.Json.Serialization.JsonIgnore]
+        public TagIndex TagIndex
+        {
+            get
+            {
+                if (_tagIndex == null && _workspace != null) _tagIndex = TagIndex.Load(_workspace);
+                return _tagIndex;
+            }
+        }
 
         private static readonly JsonSerializerOptions s_jsonOptions = new JsonSerializerOptions
         {
@@ -98,6 +111,11 @@ namespace PastMediaPlayer_Project
             if (_workspace == null) throw new InvalidOperationException("WorkspaceCache 未绑定 Workspace");
             string json = JsonSerializer.Serialize(this, s_jsonOptions);
             _workspace.WriteCacheText(CacheFileName, json);
+
+            // 同步重建并落盘标签索引，保证与 Entries 一致
+            if (_tagIndex == null) _tagIndex = TagIndex.Load(_workspace);
+            _tagIndex.Rebuild(Entries);
+            _tagIndex.Save(_workspace);
         }
 
         /// <summary>把绝对路径转换为相对工作区根目录的标准化 Key</summary>

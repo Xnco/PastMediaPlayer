@@ -26,8 +26,21 @@
                       Background="Black"/>
 
         <TextBox Grid.Row="2"/>
-        <ListView Grid.Row="3">
-            
-        </ListView>
+        <ScrollViewer Grid.Row="3" Background="White"
+                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl Name="TagListView" Background="White">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding Display}"
+                                Margin="0,0,6,6" Padding="8,2,8,2"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>

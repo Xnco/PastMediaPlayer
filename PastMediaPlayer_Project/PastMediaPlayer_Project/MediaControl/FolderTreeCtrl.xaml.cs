@@ -56,6 +56,8 @@ namespace PastMediaPlayer_Project.MediaControl
 
             rootTreeViewItem.IsExpanded = true;
             TreeViewRoot.Items.Add(rootTreeViewItem);
+
+            RefreshTagList();
         }
 
         public void CreateItemByFolderInfo(FolderTree root)
@@ -143,6 +145,13 @@ namespace PastMediaPlayer_Project.MediaControl
             ratingItem.Click += RatingMenuItem_Click;
             menu.Items.Add(ratingItem);
 
+            MenuItem tagsItem = new MenuItem();
+            var tags = TryGetTags(tree);
+            tagsItem.Header = (tags != null && tags.Count > 0) ? string.Join(";", tags) : "新增标签";
+            tagsItem.Tag = tree;
+            tagsItem.Click += TagsMenuItem_Click;
+            menu.Items.Add(tagsItem);
+
             return menu;
         }
 
@@ -164,6 +173,16 @@ namespace PastMediaPlayer_Project.MediaControl
             if (string.IsNullOrEmpty(key)) return null;
             var entry = ws.Cache.Get(key);
             return entry?.Rating;
+        }
+
+        private static List<string> TryGetTags(FolderTree tree)
+        {
+            var ws = LocalInfo.GetSingle().CurrentWorkspace;
+            if (ws == null || tree == null || string.IsNullOrEmpty(tree.fullPath)) return null;
+            string key = ws.Cache.MakeKey(tree.fullPath);
+            if (string.IsNullOrEmpty(key)) return null;
+            var entry = ws.Cache.Get(key);
+            return entry?.Tags;
         }
 
         private void AliasMenuItem_Click(object sender, RoutedEventArgs e)
@@ -220,6 +239,34 @@ namespace PastMediaPlayer_Project.MediaControl
                     tree.curItem.Header = BuildFileHeader(tree);
                     tree.curItem.ContextMenu = BuildFileContextMenu(tree);
                 }
+            }
+        }
+
+        private void TagsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = sender as MenuItem;
+            FolderTree tree = mi?.Tag as FolderTree;
+            if (tree == null) return;
+
+            var ws = LocalInfo.GetSingle().CurrentWorkspace;
+            if (ws == null) return;
+            string key = ws.Cache.MakeKey(tree.fullPath);
+            if (string.IsNullOrEmpty(key)) return;
+
+            var current = ws.Cache.Get(key)?.Tags;
+            var dlg = new TagsEditDialog(current, Window.GetWindow(this));
+            if (dlg.ShowDialog() == true)
+            {
+                var entry = ws.Cache.GetOrCreate(key);
+                entry.Tags = dlg.Tags ?? new List<string>();
+                ws.Cache.Save();
+
+                if (tree.curItem != null)
+                {
+                    tree.curItem.ContextMenu = BuildFileContextMenu(tree);
+                }
+
+                RefreshTagList();
             }
         }
 
@@ -326,6 +373,36 @@ namespace PastMediaPlayer_Project.MediaControl
                 alias.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0) return true;
 
             return false;
+        }
+
+        // 刷新右下方标签列表：显示所有标签及其视频数量
+        private void RefreshTagList()
+        {
+            if (TagListView == null) return;
+
+            var ws = LocalInfo.GetSingle().CurrentWorkspace;
+            if (ws == null)
+            {
+                TagListView.ItemsSource = null;
+                return;
+            }
+
+            var items = new List<object>();
+            var tags = ws.Cache.TagIndex?.Tags;
+            if (tags != null)
+            {
+                var list = new List<TagIndexEntry>(tags.Values);
+                list.Sort((a, b) =>
+                {
+                    if (a.Count != b.Count) return b.Count.CompareTo(a.Count);
+                    return string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase);
+                });
+                foreach (var ti in list)
+                {
+                    items.Add(new { Display = $"{ti.Name} : {ti.Count}" });
+                }
+            }
+            TagListView.ItemsSource = items;
         }
     }
 }
